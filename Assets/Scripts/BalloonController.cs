@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class BalloonController : MonoBehaviourWrapper
 {
@@ -6,31 +7,59 @@ public class BalloonController : MonoBehaviourWrapper
     public int ropeLength;
     
     private AnchorController _anchor;
+    private GumController _gum;
     private float _archimedesPower = 1;
-    private float _kickPower = 100;
-    private Vector2 pos;
+    private float _kickPower = 15;
+    private bool _balloonClicked;
 
     private void Start()
     {
         base.Start();
         _anchor = FindObjectOfType<AnchorController>();
+        _gum = FindObjectOfType<GumController>();
         _anchor.positionIt(anchorPoint);
     }
 
     private void OnGUI()
     {
+        var mosuePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (Input.GetMouseButtonDown(0))
         {
-            var mosuePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            /*var mosuePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 kick = (transform.position - mosuePos).normalized;
             RB.velocity = Vector2.zero;
-            RB.AddForce(kick * _kickPower);
+            RB.AddForce(kick * _kickPower);*/
         }
+
+
+        if (Input.GetMouseButton(0) && _balloonClicked)
+        {
+            _gum.gameObject.SetActive(true);
+            RB.velocity = Vector2.zero;
+            _gum.aiming(mosuePos, pos);
+        }
+        else if (_balloonClicked) {
+            _gum.gameObject.SetActive(false);
+            _balloonClicked = false;
+            
+            Vector2 kick = (transform.position - mosuePos);
+            RB.velocity = Vector2.zero;
+            RB.AddForce(kick * _kickPower);
+
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        _balloonClicked = true;
     }
 
     private void FixedUpdate()
     {
-        pos = transform.position;
+        base.FixedUpdate();
+        
+        if(_balloonClicked) return;
+        
         var impulse = Vector2.up * _archimedesPower;
         Debug.DrawLine(pos, pos + impulse, Color.red);
         if ((pos - anchorPoint).magnitude >= ropeLength)

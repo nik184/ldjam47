@@ -3,14 +3,14 @@
 public class RopeController : MonoBehaviourWrapper
 {
     // Start is called before the first frame update
-    private LineRenderer _lineRendererComponent;
+    private LineRenderer _lineRenderer;
     private BalloonController _balloon;
     private AnchorController _anchor;
     
 
     private void Start()
     {
-        _lineRendererComponent = GetComponent<LineRenderer>();
+        _lineRenderer = GetComponent<LineRenderer>();
         _balloon = FindObjectOfType<BalloonController>();
         _anchor = FindObjectOfType<AnchorController>();
     }
@@ -18,14 +18,13 @@ public class RopeController : MonoBehaviourWrapper
     private void Update()
     {
         Vector3[] points = new Vector3[100];
-        _lineRendererComponent.positionCount = points.Length;
+        _lineRenderer.positionCount = points.Length;
 
         for (int i = 0; i < points.Length; i++)
         {
             points[i] = _anchor.transform.position * (100 - i) / 100 + _balloon.transform.position * i / 100;
-            _lineRendererComponent.positionCount = i+1;
         }
 
-        _lineRendererComponent.SetPositions(points);
+        _lineRenderer.SetPositions(points);
     }
 }
