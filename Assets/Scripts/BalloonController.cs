@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class BalloonController : MonoBehaviourWrapper
 {
@@ -18,7 +19,7 @@ public class BalloonController : MonoBehaviourWrapper
     private GumController _gum;
     private bool _balloonClicked;
     private float _balloonClickTime;
-    private bool _isAlive = true;
+    public bool IsAlive { get; private set; } = true;
 
 
     private void Start()
@@ -34,6 +35,9 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void OnGUI()
     {
+        
+        if(!IsAlive) return;
+        
         var mosuePos = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var kickVector = Vector2.zero;
         
@@ -52,6 +56,9 @@ public class BalloonController : MonoBehaviourWrapper
             _gum.aiming(kickVector, pos);
             
             RB.velocity = Vector2.zero;
+            
+            var explosionSound = Resources.Load<AudioClip>("Sounds/ball_rope");
+            AudioObject.GetInstance().Play(explosionSound);
         }
         else if (_balloonClicked) 
         {
@@ -75,7 +82,7 @@ public class BalloonController : MonoBehaviourWrapper
     {
         base.FixedUpdate();
         
-        if(_balloonClicked || !_isAlive) return;
+        if(_balloonClicked || !IsAlive) return;
         
         var impulse = Vector2.up * ArchimedesPower;
         Debug.DrawLine(pos, pos + impulse, Color.red);
@@ -143,9 +150,15 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void Kill(EnemyController enemy)
     {
-        Destroy(enemy.gameObject);
         StaticData.IncrementScore();
         _scoreBoard.RedrawScore();
+        var explosion = Resources.Load<GameObject>("FX/CFX3_Fire_Explosion");
+        Destroy(Instantiate(explosion, enemy.transform.position, Quaternion.identity), 2);
+        Destroy(enemy.gameObject);
+        
+        var explosionSound = Resources.Load<AudioClip>("Sounds/punch" + Mathf.RoundToInt(Random.Range(1,3.4f)));
+        AudioObject.GetInstance().Play(explosionSound);
+
 
         if (StaticData.KilledEnemies == StaticData.TotalEnemies)
         {
@@ -172,8 +185,15 @@ public class BalloonController : MonoBehaviourWrapper
 
     private IEnumerator Loose()
     {
-        _isAlive = false;
+        IsAlive = false;
+        
         Destroy(GetComponentInChildren<SpriteRenderer>().gameObject);
+        var explosion = Resources.Load<GameObject>("FX/CFX3_Skull_Explosion");
+        
+        var explosionSound = Resources.Load<AudioClip>("Sounds/damageRecieved");
+        AudioObject.GetInstance().Play(explosionSound);
+        
+        Destroy(Instantiate(explosion, transform.position, Quaternion.identity), 2);
         yield return new WaitForSeconds(2);
         MenuController.GetInstance().LooseScene();
     }
