@@ -14,6 +14,7 @@ public class GumController : MonoBehaviourWrapper
 
     public void aiming(Vector2 from, Vector2 to)
     {
+        
         Vector3[] points = new Vector3[2];
         _lineRenderer.positionCount = points.Length;
 
