@@ -1,14 +1,16 @@
 ﻿﻿using System.Collections;
- using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Screen;
 
-public class EnemyController : MonoBehaviourWrapper
+ public class EnemyController : MonoBehaviourWrapper
 {
 
     public MovingType movingType = MovingType.Linear;
-    public List<Vector2> trajectory;
     public int speed;
+    public List<EnemyMovingPoint> points = new List<EnemyMovingPoint>();
 
+    private List<Vector2> trajectory = new List<Vector2>();
     [SerializeField] private List<float> trajectoryLengths = new List<float>();
     private Vector2 _currentFragment;
     private int _currentStartPoint;
@@ -19,10 +21,15 @@ public class EnemyController : MonoBehaviourWrapper
         base.Start();
 
         
-        if (movingType == MovingType.Random) StartCoroutine(nameof(RandomMoving));
+        if (movingType == MovingType.Random) StartCoroutine(nameof(RandomMovingCoroutine));
         else if (movingType == MovingType.Linear)
         {
-            if(trajectory.Count < 1) return;
+            if(points.Count < 1) return;
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                trajectory.Add(points[i].transform.position);
+            }
         
             for (int i = 0; i < trajectory.Count - 1; i++)
             {
@@ -38,6 +45,7 @@ public class EnemyController : MonoBehaviourWrapper
     {
         base.FixedUpdate();
         if(movingType == MovingType.Linear) LinearMoving();
+        if(movingType == MovingType.Random) RandomMoving();
     }
 
     private void LinearMoving()
@@ -50,17 +58,21 @@ public class EnemyController : MonoBehaviourWrapper
             SwitchFragment();
         }
     }
+    private void RandomMoving()
+    {
+        if (pos.x < -width/2 || pos.x > width/2 || pos.y < -height/2 || pos.y > height/2)
+        {
+            SwitchDirection();
+        }
+    }
 
 
-    private IEnumerator RandomMoving()
+    private IEnumerator RandomMovingCoroutine()
     {
         while (true)
         {
-            var t = Random.Range(2, 5);
-            var x = Random.Range(-1, 1);
-            var y = Random.Range(-1, 1);
-            
-            RB.AddForce(new Vector2(x, y) * 200000 * speed);
+            SwitchDirection();
+            var t = Random.Range(1, 3);
             yield return new WaitForSeconds(t);
         }
     }
@@ -101,7 +113,13 @@ public class EnemyController : MonoBehaviourWrapper
         
         _currentFragment = trajectory[_currentEndPoint] - trajectory[_currentStartPoint];
     }
-    
+
+    private void SwitchDirection()
+    {
+        var x = Random.Range(-1, 1);
+        var y = Random.Range(-1, 1);
+        RB.AddForce(new Vector2(x, y) * 200000 * speed);
+    }
 }
 
 public enum MovingType

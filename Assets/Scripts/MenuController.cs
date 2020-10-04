@@ -23,14 +23,58 @@ public class MenuController : MonoBehaviour
 
         return Instance;
     }
+    
+    public void GoToMainMenu()
+    {
+        GoToScene(0);
+    }
+    
+    public void WinScene()
+    {
+        GoToScene(1);
+    }
+    
+    public void LooseScene()
+    {
+        GoToScene(2);
+    }
+    
+    public void PauseScene()
+    {
+        GoToScene(3);
+    }
 
     public void StartGame()
     {
-        SceneManager.LoadScene(1);
+        GoToScene(StaticData.FirstLevel);
     }
-
+    
     public void ReloadScene()
     {
-        SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex );
+        GoToScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void RetryCurrentLevel()
+    {
+        GoToScene(StaticData.CurrentLevel);
+    }
+
+    public void GoToNextLevel()
+    {
+        StaticData.NextLevel();
+        GoToScene(StaticData.CurrentLevel);
+    }
+
+    public void GoToScene(int scene)
+    {
+        if (scene >= SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(0);
+            return;
+        }
+        
+        StaticData.TotalEnemies = 0;
+        StaticData.KilledEnemies = 0;
+        SceneManager.LoadScene(scene);
     }
 }
