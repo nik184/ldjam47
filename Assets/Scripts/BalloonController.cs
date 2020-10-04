@@ -1,5 +1,6 @@
-﻿﻿using System;
+﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BalloonController : MonoBehaviourWrapper
 {
@@ -11,6 +12,7 @@ public class BalloonController : MonoBehaviourWrapper
     private const float KickPower = 15;
     private const float MinSpeedToKillEnemy = 0.5f;
 
+    private ScoreBoard _scoreBoard;
     private AnchorController _anchor;
     private GumController _gum;
     private bool _balloonClicked;
@@ -21,7 +23,10 @@ public class BalloonController : MonoBehaviourWrapper
         base.Start();
         _anchor = FindObjectOfType<AnchorController>();
         _gum = FindObjectOfType<GumController>();
+        _scoreBoard = FindObjectOfType<ScoreBoard>();
         _anchor.positionIt(anchorPoint);
+
+        StaticData.CurrentLevel = SceneManager.GetActiveScene().buildIndex;
     }
 
     private void OnGUI()
@@ -115,7 +120,7 @@ public class BalloonController : MonoBehaviourWrapper
             && !_balloonClicked
         )
         {
-            Destroy(enemyController.gameObject);
+            Kill(enemyController);
         } else if (enemyController != null && collision.collider.GetComponent<DamageArea>())
         {
             MakeDamage(enemyController.transform.position);
@@ -130,6 +135,29 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void Die()
     {
-        MenuController.GetInstance().ReloadScene();
+        MenuController.GetInstance().LooseScene();
+    }
+
+    private void Kill(EnemyController enemy)
+    {
+        Destroy(enemy.gameObject);
+        StaticData.IncrementScore();
+        _scoreBoard.RedrawScore();
+
+        if (StaticData.KilledEnemies == StaticData.TotalEnemies)
+        {
+            MenuController.GetInstance().WinScene();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        RopeBoost ropeBoost = collider.GetComponent<RopeBoost>();
+
+        if (ropeBoost != null)
+        {
+            ropeLength += ropeBoost.boostLength;
+            Destroy(ropeBoost.gameObject);
+        }
     }
 }
