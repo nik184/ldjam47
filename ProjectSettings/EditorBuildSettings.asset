@@ -18,9 +18,18 @@ EditorBuildSettings:
     path: Assets/Scenes/PauseScene.unity
     guid: b8c0f9fa75c85bf44988ec4ea50aca54
   - enabled: 1
+    path: Assets/Scenes/Story.unity
+    guid: 40e098e21dfdc464cb4c922c67a81bea
+  - enabled: 1
+    path: Assets/Scenes/HowTo.unity
+    guid: 28cfc4d9a9d819647bf5e7919ac08954
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 05f01513788723344b53dfb5a03790a0
   - enabled: 1
     path: Assets/Scenes/Level2.unity
     guid: 13012acc2e0ed9043ba85c46d071371b
+  - enabled: 1
+    path: Assets/Scenes/Level3.unity
+    guid: 08e35699c7442564aad68d2f4c7d32e4
   m_configObjects: {}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8087884481387187868}
   - component: {fileID: 2932930816033843663}
   - component: {fileID: 7327749485870412583}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DamageableArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +81,7 @@ GameObject:
   - component: {fileID: 5314103426259081948}
   - component: {fileID: 3106380903421727760}
   - component: {fileID: 7520587589120362742}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SquareSharpEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,8 +118,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movingType: 0
-  trajectory: []
   speed: 0
+  points: []
   trajectoryLengths: []
 --- !u!50 &7520587589120362742
 Rigidbody2D:
@@ -152,7 +152,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5314103427048106426}
   - component: {fileID: 5314103427048106427}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 353823076813784020}
   - component: {fileID: 1729916964971064022}
   - component: {fileID: 1843688571644024585}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DamageArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1,7 +1,9 @@
-﻿﻿using System.Collections;
+﻿﻿using System;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.Screen;
+ using Random = UnityEngine.Random;
 
  public class EnemyController : MonoBehaviourWrapper
 {
@@ -16,38 +18,84 @@ using static UnityEngine.Screen;
     private int _currentStartPoint;
     private int _currentEndPoint;
 
+    private bool _wasSpawned = false;
+    private Vector2 _anchor;
+    private Vector2 _aimCoord;
+    private AimType _aim;
+    private SpawnerController[] _spawners;
+    public bool WasSpawned
+    {
+        set => _wasSpawned = value;
+    }
+
     protected override void Start()
     {
         base.Start();
 
+        var _anchor = FindObjectOfType<AnchorController>().transform.position;
         
-        if (movingType == MovingType.Random) StartCoroutine(nameof(RandomMovingCoroutine));
-        else if (movingType == MovingType.Linear)
+        if (_wasSpawned)
         {
-            if(points.Count < 1) return;
-
-            for (int i = 0; i < points.Count; i++)
+            _spawners = FindObjectsOfType<SpawnerController>();
+            _aimCoord = _anchor;
+            _aim = AimType.Player;
+            Debug.Log(_aimCoord);
+        } else switch (movingType)
+        {
+            case MovingType.Random:
+                StartCoroutine(nameof(RandomMovingCoroutine));
+                break;
+            case MovingType.Linear when points.Count < 1:
+                return;
+            case MovingType.Linear:
             {
-                trajectory.Add(points[i].transform.position);
-            }
+                for (int i = 0; i < points.Count; i++)
+                {
+                    trajectory.Add(points[i].transform.position);
+                }
         
-            for (int i = 0; i < trajectory.Count - 1; i++)
-            {
-                trajectoryLengths.Add((trajectory[i] - trajectory[i + 1]).magnitude);
-            }
+                for (int i = 0; i < trajectory.Count - 1; i++)
+                {
+                    trajectoryLengths.Add((trajectory[i] - trajectory[i + 1]).magnitude);
+                }
 
-            SwitchFragment();
-            transform.position = trajectory[0];
+                SwitchFragment();
+                transform.position = trajectory[0];
+                break;
+            }
         }
     }
 
     private void FixedUpdate()
     {
         base.FixedUpdate();
-        if(movingType == MovingType.Linear) LinearMoving();
-        if(movingType == MovingType.Random) RandomMoving();
+        if(_wasSpawned) SpawnedMoving();
+        else if(movingType == MovingType.Linear) LinearMoving();
+        else if(movingType == MovingType.Random) RandomMoving();
     }
-
+    
+    private void SpawnedMoving()
+    {
+        transform.position += ((Vector3)_aimCoord - transform.position).normalized * (speed * Time.deltaTime);
+        
+        
+        
+        if (!(((Vector3) _aimCoord - transform.position).magnitude < 0.5f)) return;
+        switch (_aim)
+        {
+            case AimType.Player:
+                _aimCoord = _spawners[
+                    Mathf.RoundToInt(Random.Range(0, _spawners.Length - 1))
+                ].transform.position;
+                _aim = AimType.Spawner;
+                break;
+            case AimType.Spawner:
+                _aimCoord = _anchor;
+                _aim = AimType.Player;
+                break;
+        }
+    }
+    
     private void LinearMoving()
     {
         if(trajectory.Count < 1) return;
@@ -122,8 +170,14 @@ using static UnityEngine.Screen;
     }
 }
 
-public enum MovingType
-{
-    Linear,
-    Random
-}
+ public enum MovingType
+ {
+     Linear,
+     Random
+ }
+ 
+ public enum AimType
+ {
+     Spawner,
+     Player
+ }

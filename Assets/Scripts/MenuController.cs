@@ -43,6 +43,16 @@ public class MenuController : MonoBehaviour
     {
         GoToScene(3);
     }
+    
+    public void StoryScene()
+    {
+        GoToScene(4);
+    }
+    
+    public void HowToScene()
+    {
+        GoToScene(5);
+    }
 
     public void StartGame()
     {
