@@ -20,20 +20,21 @@ public class SpawnerController : MonoBehaviour
 
     private IEnumerator SpawnCoroutine()
     {
+        yield return new WaitForSeconds(1);
         while (true)
         {
-            if (_alreadySpawned >= SpawnerSize)
+            if (_alreadySpawned >= SpawnerSize) yield break;
+
+            if (FindObjectsOfType<EnemyController>().Length < 3)
             {
-                yield break;
-            }
+                var newEnemy = Instantiate(Enemies[1], transform);
+                newEnemy.gameObject.SetActive(true);
+                newEnemy.WasSpawned = true;
+                newEnemy.speed = EnemiesSpeed;
+                _alreadySpawned++;
+            } 
             
             yield return new WaitForSeconds(SpawnDuration);
-            
-            var newEnemy = Instantiate(Enemies[1], transform);
-            newEnemy.gameObject.SetActive(true);
-            newEnemy.WasSpawned = true;
-            newEnemy.speed = EnemiesSpeed;
-            _alreadySpawned++;
         }
     }
 }

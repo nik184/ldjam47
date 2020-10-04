@@ -74,6 +74,7 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void OnMouseDrag()
     {
+        if(!IsAlive) return;
         _balloonClicked = true;
         _balloonClickTime = Time.time;
     }
@@ -117,6 +118,8 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if(!IsAlive) return;
+        
         var enemyController = collision.gameObject.GetComponentInParent<EnemyController>();
         
         Debug.Log(collision.collider.GetComponent<DamageableArea>());
@@ -168,6 +171,8 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
+        if(!IsAlive) return;
+        
         RopeBoost ropeBoost = collider.GetComponent<RopeBoost>();
 
         if (ropeBoost != null)
@@ -188,6 +193,8 @@ public class BalloonController : MonoBehaviourWrapper
         IsAlive = false;
         
         Destroy(GetComponentInChildren<SpriteRenderer>().gameObject);
+        Destroy(RB);
+        Destroy(BC);
         var explosion = Resources.Load<GameObject>("FX/CFX3_Skull_Explosion");
         
         var explosionSound = Resources.Load<AudioClip>("Sounds/damageRecieved");

@@ -78,8 +78,6 @@ using static UnityEngine.Screen;
     {
         transform.position += ((Vector3)_aimCoord - transform.position).normalized * (speed * Time.deltaTime);
         
-        
-        
         if (!(((Vector3) _aimCoord - transform.position).magnitude < 0.5f)) return;
         switch (_aim)
         {
