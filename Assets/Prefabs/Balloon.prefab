@@ -47,9 +47,9 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 0.1
-  m_LinearDrag: 1
+  m_LinearDrag: 2
   m_AngularDrag: 0.25
-  m_GravityScale: 0.1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -67,9 +67,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ed92e60b8960a74fa0b5bc2e7c2013d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anchorPoint: {x: 0, y: 0}
-  ropeLength: 5
-  KickSwing: 3
+  anchorPoint: {x: 0, y: -2}
+  ropeLength: 3
+  kickSwing: 10
 --- !u!58 &3842855449080421192
 CircleCollider2D:
   m_ObjectHideFlags: 0
