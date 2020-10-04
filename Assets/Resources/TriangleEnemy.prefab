@@ -91,6 +91,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1434217028106644207}
   - component: {fileID: 8161706534725051427}
+  - component: {fileID: 6990512731129253114}
   m_Layer: 0
   m_Name: TriangleEnemy
   m_TagString: Untagged
@@ -131,6 +132,27 @@ MonoBehaviour:
   trajectory: []
   speed: 0
   trajectoryLengths: []
+--- !u!50 &6990512731129253114
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434217028106644204}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 10000
+  m_LinearDrag: 0
+  m_AngularDrag: 10000
+  m_GravityScale: 0
+  m_Material: {fileID: 6200000, guid: 1181d4aed15928b4d882fe1d905175ec, type: 2}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1657148854187526627
 GameObject:
   m_ObjectHideFlags: 0

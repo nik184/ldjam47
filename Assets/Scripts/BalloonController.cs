@@ -5,12 +5,12 @@ public class BalloonController : MonoBehaviourWrapper
 {
     public Vector2 anchorPoint = Vector2.down;
     public int ropeLength = 5;
-    public float KickSwing = 5;
-    
-    private readonly float _archimedesPower = 1;
-    private readonly float _kickPower = 15;
-    private readonly float MinSpeedToKillEnemy = 0.5f;
-    
+    public float kickSwing = 5;
+
+    private const float ArchimedesPower = 1;
+    private const float KickPower = 15;
+    private const float MinSpeedToKillEnemy = 0.5f;
+
     private AnchorController _anchor;
     private GumController _gum;
     private bool _balloonClicked;
@@ -31,9 +31,9 @@ public class BalloonController : MonoBehaviourWrapper
         
         if (Input.GetMouseButton(0) && _balloonClicked)
         {
-            if ((mosuePos - pos).magnitude > KickSwing)
+            if ((mosuePos - pos).magnitude > kickSwing)
             {
-                kickVector = pos + (mosuePos - pos).normalized * KickSwing;
+                kickVector = pos + (mosuePos - pos).normalized * kickSwing;
             }
             else
             {
@@ -52,7 +52,7 @@ public class BalloonController : MonoBehaviourWrapper
             
             Vector2 kick = pos - mosuePos;
             RB.velocity = Vector2.zero;
-            RB.AddForce(kick * _kickPower);
+            RB.AddForce(kick * KickPower);
 
         }
     }
@@ -69,7 +69,7 @@ public class BalloonController : MonoBehaviourWrapper
         
         if(_balloonClicked) return;
         
-        var impulse = Vector2.up * _archimedesPower;
+        var impulse = Vector2.up * ArchimedesPower;
         Debug.DrawLine(pos, pos + impulse, Color.red);
         if ((pos - anchorPoint).magnitude >= ropeLength)
         {

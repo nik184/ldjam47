@@ -1,4 +1,5 @@
-﻿﻿using System.Collections.Generic;
+﻿﻿using System.Collections;
+ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviourWrapper
@@ -17,27 +18,50 @@ public class EnemyController : MonoBehaviourWrapper
     {
         base.Start();
 
-        if(trajectory.Count < 1) return;
         
-        for (int i = 0; i < trajectory.Count - 1; i++)
+        if (movingType == MovingType.Random) StartCoroutine(nameof(RandomMoving));
+        else if (movingType == MovingType.Linear)
         {
-            trajectoryLengths.Add((trajectory[i] - trajectory[i + 1]).magnitude);
-        }
+            if(trajectory.Count < 1) return;
+        
+            for (int i = 0; i < trajectory.Count - 1; i++)
+            {
+                trajectoryLengths.Add((trajectory[i] - trajectory[i + 1]).magnitude);
+            }
 
-        SwitchFragment();
-        transform.position = trajectory[0];
+            SwitchFragment();
+            transform.position = trajectory[0];
+        }
     }
 
     private void FixedUpdate()
     {
         base.FixedUpdate();
-        
+        if(movingType == MovingType.Linear) LinearMoving();
+    }
+
+    private void LinearMoving()
+    {
         if(trajectory.Count < 1) return;
         transform.position += (Vector3)_currentFragment.normalized * (speed * Time.deltaTime);
         
         if (_currentFragment.magnitude <= (pos - trajectory[_currentStartPoint]).magnitude)
         {
             SwitchFragment();
+        }
+    }
+
+
+    private IEnumerator RandomMoving()
+    {
+        while (true)
+        {
+            var t = Random.Range(2, 5);
+            var x = Random.Range(-1, 1);
+            var y = Random.Range(-1, 1);
+            
+            RB.AddForce(new Vector2(x, y) * 200000 * speed);
+            yield return new WaitForSeconds(t);
         }
     }
 

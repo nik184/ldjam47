@@ -70,6 +70,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5314103426259081948}
   - component: {fileID: 3106380903421727760}
+  - component: {fileID: 7520587589120362742}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -107,7 +108,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movingType: 0
-  direction: {x: 1, y: 0}
+  trajectory: []
+  speed: 0
+  trajectoryLengths: []
+--- !u!50 &7520587589120362742
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5314103426259081951}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 10000
+  m_LinearDrag: 0
+  m_AngularDrag: 10000
+  m_GravityScale: 0
+  m_Material: {fileID: 6200000, guid: 1181d4aed15928b4d882fe1d905175ec, type: 2}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &5314103427048106421
 GameObject:
   m_ObjectHideFlags: 0
