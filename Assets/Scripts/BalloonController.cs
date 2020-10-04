@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,8 +9,8 @@ public class BalloonController : MonoBehaviourWrapper
     public int ropeLength = 5;
     public float kickSwing = 5;
 
-    private const float ArchimedesPower = 1;
-    private const float KickPower = 15;
+    private const float ArchimedesPower = 2;
+    private const float KickPower = 25;
     private const float MinSpeedToKillEnemy = 0.5f;
 
     private ScoreBoard _scoreBoard;
@@ -135,7 +136,7 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void Die()
     {
-        MenuController.GetInstance().LooseScene();
+        StartCoroutine(nameof(Loose));
     }
 
     private void Kill(EnemyController enemy)
@@ -146,7 +147,7 @@ public class BalloonController : MonoBehaviourWrapper
 
         if (StaticData.KilledEnemies == StaticData.TotalEnemies)
         {
-            MenuController.GetInstance().WinScene();
+            StartCoroutine(nameof(Win));
         }
     }
 
@@ -159,5 +160,17 @@ public class BalloonController : MonoBehaviourWrapper
             ropeLength += ropeBoost.boostLength;
             Destroy(ropeBoost.gameObject);
         }
+    }
+
+    private IEnumerator Win()
+    {
+        yield return new WaitForSeconds(2);
+        MenuController.GetInstance().WinScene();
+    }
+
+    private IEnumerator Loose()
+    {
+        yield return new WaitForSeconds(2);
+        MenuController.GetInstance().LooseScene();
     }
 }
