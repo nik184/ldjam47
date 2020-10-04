@@ -18,6 +18,8 @@ public class BalloonController : MonoBehaviourWrapper
     private GumController _gum;
     private bool _balloonClicked;
     private float _balloonClickTime;
+    private bool _isAlive = true;
+
 
     private void Start()
     {
@@ -73,7 +75,7 @@ public class BalloonController : MonoBehaviourWrapper
     {
         base.FixedUpdate();
         
-        if(_balloonClicked) return;
+        if(_balloonClicked || !_isAlive) return;
         
         var impulse = Vector2.up * ArchimedesPower;
         Debug.DrawLine(pos, pos + impulse, Color.red);
@@ -170,6 +172,8 @@ public class BalloonController : MonoBehaviourWrapper
 
     private IEnumerator Loose()
     {
+        _isAlive = false;
+        Destroy(GetComponentInChildren<SpriteRenderer>().gameObject);
         yield return new WaitForSeconds(2);
         MenuController.GetInstance().LooseScene();
     }

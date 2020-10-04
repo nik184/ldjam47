@@ -12,6 +12,13 @@ public class ScoreBoard : MonoBehaviour
     private void Start()
     {
         StaticData.TotalEnemies = FindObjectsOfType<EnemyController>().Length;
+
+        var spawners = FindObjectsOfType<SpawnerController>();
+        foreach (var spawner in spawners)
+        {
+            StaticData.TotalEnemies += spawner.SpawnerSize;
+        }
+        
         text = GetComponent<Text>();
         RedrawScore();
     }

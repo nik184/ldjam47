@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class StaticData
 {
-    public const int FirstLevel = 4;
+    public const int FirstLevel = 6;
 
     public static int CurrentLevel = FirstLevel;
     

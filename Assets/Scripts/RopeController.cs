@@ -17,12 +17,13 @@ public class RopeController : MonoBehaviourWrapper
 
     private void Update()
     {
-        Vector3[] points = new Vector3[100];
+        Vector3[] points = new Vector3[101];
         _lineRenderer.positionCount = points.Length;
 
         for (int i = 0; i < points.Length; i++)
         {
-            points[i] = _anchor.transform.position * (100 - i) / 100 + _balloon.transform.position * i / 100;
+            points[i] = _anchor.transform.position * (101 - i) / 101 + _balloon.transform.position * i / 101;
+            points[i].y += (((float)i-50)*((float)i-50) - 2500) / 1000;
         }
 
         _lineRenderer.SetPositions(points);
