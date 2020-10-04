@@ -1,25 +1,83 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviourWrapper
 {
 
     public MovingType movingType = MovingType.Linear;
-    public Vector2 direction = Vector2.right;
+    public List<Vector2> trajectory;
+    public int speed;
+
+    [SerializeField] private List<float> trajectoryLengths = new List<float>();
+    private Vector2 _currentFragment;
+    private int _currentStartPoint;
+    private int _currentEndPoint;
 
     protected override void Start()
     {
         base.Start();
-        RB.AddForce(direction * 2000000);
+
+        if(trajectory.Count < 1) return;
+        
+        for (int i = 0; i < trajectory.Count - 1; i++)
+        {
+            trajectoryLengths.Add((trajectory[i] - trajectory[i + 1]).magnitude);
+        }
+
+        SwitchFragment();
+        transform.position = trajectory[0];
     }
 
     private void FixedUpdate()
     {
         base.FixedUpdate();
-        //transform.position = pos + direction * Time.deltaTime;
+        
+        if(trajectory.Count < 1) return;
+        transform.position += (Vector3)_currentFragment.normalized * (speed * Time.deltaTime);
+        
+        if (_currentFragment.magnitude <= (pos - trajectory[_currentStartPoint]).magnitude)
+        {
+            SwitchFragment();
+        }
     }
+
+    private void SwitchFragment()
+    {
+        if (_currentStartPoint == _currentEndPoint)
+        {
+            _currentStartPoint = 0;
+            _currentEndPoint = 1;
+        }
+        else if (_currentStartPoint < _currentEndPoint)
+        {
+            if (_currentEndPoint < trajectory.Count - 1)
+            {
+                _currentEndPoint++;
+                _currentStartPoint++;
+            }
+            else
+            {
+                _currentEndPoint--;
+                _currentStartPoint++;
+            }
+        }
+        else if (_currentStartPoint > _currentEndPoint)
+        {
+            if (_currentEndPoint > 0)
+            {
+                _currentEndPoint--;
+                _currentStartPoint--;
+            }
+            else
+            {
+                _currentEndPoint++;
+                _currentStartPoint--;
+            }
+        }
+        
+        _currentFragment = trajectory[_currentEndPoint] - trajectory[_currentStartPoint];
+    }
+    
 }
 
 public enum MovingType

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 
 public class GumController : MonoBehaviourWrapper
 {
@@ -21,8 +21,6 @@ public class GumController : MonoBehaviourWrapper
         points[1] = to;
 
         _lineRenderer.SetPositions(points);
-
-        Debug.Log(from);
         _spriteRenderer.gameObject.transform.position = from;
     }
 }

@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 
 public class AnchorController : MonoBehaviourWrapper
 {
-    public void positionIt(Vector2 pos)
+    public void positionIt(Vector2 coord)
     {
-        transform.position = pos;
+        transform.position = coord;
     }
 }

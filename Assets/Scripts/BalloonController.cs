@@ -1,16 +1,20 @@
-﻿using System;
+﻿﻿using System;
 using UnityEngine;
 
 public class BalloonController : MonoBehaviourWrapper
 {
-    public Vector2 anchorPoint;
-    public int ropeLength;
+    public Vector2 anchorPoint = Vector2.down;
+    public int ropeLength = 5;
+    public float KickSwing = 5;
+    
+    private readonly float _archimedesPower = 1;
+    private readonly float _kickPower = 15;
+    private readonly float MinSpeedToKillEnemy = 0.5f;
     
     private AnchorController _anchor;
     private GumController _gum;
-    private float _archimedesPower = 1;
-    private float _kickPower = 15;
     private bool _balloonClicked;
+    private float _balloonClickTime;
 
     private void Start()
     {
@@ -22,36 +26,41 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void OnGUI()
     {
-        var mosuePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (Input.GetMouseButtonDown(0))
-        {
-            /*var mosuePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 kick = (transform.position - mosuePos).normalized;
-            RB.velocity = Vector2.zero;
-            RB.AddForce(kick * _kickPower);*/
-        }
-
-
+        var mosuePos = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var kickVector = Vector2.zero;
+        
         if (Input.GetMouseButton(0) && _balloonClicked)
         {
+            if ((mosuePos - pos).magnitude > KickSwing)
+            {
+                kickVector = pos + (mosuePos - pos).normalized * KickSwing;
+            }
+            else
+            {
+                kickVector = mosuePos;
+            }
+            
             _gum.gameObject.SetActive(true);
+            _gum.aiming(kickVector, pos);
+            
             RB.velocity = Vector2.zero;
-            _gum.aiming(mosuePos, pos);
         }
-        else if (_balloonClicked) {
+        else if (_balloonClicked) 
+        {
             _gum.gameObject.SetActive(false);
             _balloonClicked = false;
             
-            Vector2 kick = (transform.position - mosuePos);
+            Vector2 kick = pos - mosuePos;
             RB.velocity = Vector2.zero;
             RB.AddForce(kick * _kickPower);
 
         }
     }
 
-    private void OnMouseDown()
+    private void OnMouseDrag()
     {
         _balloonClicked = true;
+        _balloonClickTime = Time.time;
     }
 
     private void FixedUpdate()
@@ -89,5 +98,38 @@ public class BalloonController : MonoBehaviourWrapper
         }
 
         RB.AddForce(impulse * Time.deltaTime * 100);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        var enemyController = collision.gameObject.GetComponentInParent<EnemyController>();
+        
+        Debug.Log(collision.collider.GetComponent<DamageableArea>());
+        Debug.Log(collision.collider.GetComponent<DamageArea>());
+        
+        if (
+            enemyController != null
+            && collision.collider.GetComponent<DamageableArea>()
+            && RB.velocity.magnitude >= MinSpeedToKillEnemy
+            && Time.time - _balloonClickTime < 0.5
+            && !_balloonClicked
+        )
+        {
+            Destroy(enemyController.gameObject);
+        } else if (enemyController != null && collision.collider.GetComponent<DamageArea>())
+        {
+            MakeDamage(enemyController.transform.position);
+        }
+    }
+
+    private void MakeDamage(Vector2 enemyPos)
+    {
+        RB.AddForce((pos - enemyPos) * 50);
+        Die();
+    }
+
+    private void Die()
+    {
+        MenuController.GetInstance().ReloadScene();
     }
 }
