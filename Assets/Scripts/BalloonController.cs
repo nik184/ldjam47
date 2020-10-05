@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class BalloonController : MonoBehaviourWrapper
@@ -21,6 +22,8 @@ public class BalloonController : MonoBehaviourWrapper
     private float _balloonClickTime;
     public bool IsAlive { get; private set; } = true;
 
+    private bool _paused;
+
 
     private void Start()
     {
@@ -36,7 +39,7 @@ public class BalloonController : MonoBehaviourWrapper
     private void OnGUI()
     {
         
-        if(!IsAlive) return;
+        if(!IsAlive || _paused) return;
         
         var mosuePos = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var kickVector = Vector2.zero;
@@ -69,6 +72,18 @@ public class BalloonController : MonoBehaviourWrapper
             RB.velocity = Vector2.zero;
             RB.AddForce(kick * KickPower);
 
+        }
+    }
+
+    private void Update()
+    {
+        
+
+        if (Input.GetButtonDown("Pause"))
+        {
+            Debug.Log("asdasd");
+            _paused = !_paused;
+            Time.timeScale = _paused ? 0 : 1;
         }
     }
 

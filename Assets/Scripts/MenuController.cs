@@ -29,6 +29,11 @@ public class MenuController : MonoBehaviour
         GoToScene(0);
     }
     
+    public void Exit()
+    {
+        Application.Quit();
+    }
+    
     public void WinScene()
     {
         GoToScene(1);
