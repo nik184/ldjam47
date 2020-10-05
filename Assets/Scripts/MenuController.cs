@@ -8,9 +8,18 @@ public class MenuController : MonoBehaviour
 {
     private static MenuController Instance;
 
+    public static bool Paused { get; private set; } = false;
+    private PanelPause _pausePanel;
+
     private void Start()
     {
         Instance = this;
+        _pausePanel = FindObjectOfType<PanelPause>();
+        Debug.Log(_pausePanel);
+        if (_pausePanel != null)
+        {
+            if (_pausePanel.gameObject.activeSelf) _pausePanel.gameObject.SetActive(false);
+        }
     }
 
     public static MenuController GetInstance()
@@ -43,20 +52,14 @@ public class MenuController : MonoBehaviour
     {
         GoToScene(2);
     }
-    
-    public void PauseScene()
+    public void StoryScene()
     {
         GoToScene(3);
     }
     
-    public void StoryScene()
-    {
-        GoToScene(4);
-    }
-    
     public void HowToScene()
     {
-        GoToScene(5);
+        GoToScene(4);
     }
 
     public void StartGame()
@@ -97,9 +100,21 @@ public class MenuController : MonoBehaviour
             SceneManager.LoadScene(0);
             return;
         }
-        
+
+        Paused = false;
+        Time.timeScale = 1;
         StaticData.TotalEnemies = 0;
         StaticData.KilledEnemies = 0;
         SceneManager.LoadScene(scene);
+    }
+
+    public void Pause()
+    {
+        Paused = !Paused;
+        Time.timeScale = MenuController.Paused ? 0 : 1;
+        if (_pausePanel != null)
+        {
+            _pausePanel.gameObject.SetActive(!_pausePanel.gameObject.activeSelf);
+        }
     }
 }

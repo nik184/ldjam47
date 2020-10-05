@@ -16,15 +16,19 @@ public class BalloonController : MonoBehaviourWrapper
     private const float MinSpeedToKillEnemy = 0.5f;
     private readonly Vector2 _anchorPoint = new Vector2(0, -2);
 
+    private SpriteRenderer _spriteRenderer;
     private ScoreBoard _scoreBoard;
     private AnchorController _anchor;
     private GumController _gum;
+    private PanelPause _pausePanel;
     private bool _balloonClicked;
     private float _balloonClickTime;
     public bool IsAlive { get; private set; } = true;
 
-    private bool _paused;
+    private bool _hasHealPoint = false;
+    public bool HasHealPoint => _hasHealPoint;
     private float _lastKillTime;
+    
 
 
     private void Start()
@@ -34,6 +38,7 @@ public class BalloonController : MonoBehaviourWrapper
         _gum = FindObjectOfType<GumController>();
         _scoreBoard = FindObjectOfType<ScoreBoard>();
         _anchor.positionIt(_anchorPoint);
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         StaticData.CurrentLevel = SceneManager.GetActiveScene().buildIndex;
     }
@@ -41,7 +46,7 @@ public class BalloonController : MonoBehaviourWrapper
     private void OnGUI()
     {
         
-        if(!IsAlive || _paused) return;
+        if(!IsAlive || MenuController.Paused) return;
         
         var mosuePos = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var kickVector = Vector2.zero;
@@ -79,13 +84,9 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void Update()
     {
-        
-
         if (Input.GetButtonDown("Pause"))
         {
-            Debug.Log("asdasd");
-            _paused = !_paused;
-            Time.timeScale = _paused ? 0 : 1;
+            MenuController.GetInstance().Pause();
         }
     }
 
@@ -103,7 +104,6 @@ public class BalloonController : MonoBehaviourWrapper
         if(_balloonClicked || !IsAlive) return;
         
         var impulse = Vector2.up * ArchimedesPower;
-        Debug.DrawLine(pos, pos + impulse, Color.red);
         if ((pos - _anchorPoint).magnitude >= ropeLength)
         {
             var ropeVecDir = (_anchorPoint - pos).normalized;
@@ -126,8 +126,6 @@ public class BalloonController : MonoBehaviourWrapper
             
             
             impulse += ropePulling;
-            Debug.DrawLine(pos,  pos + ropePulling, Color.magenta);
-            Debug.DrawLine(pos,  pos + impulse, Color.blue);
         }
 
         RB.AddForce(impulse * Time.deltaTime * 100);
@@ -138,9 +136,6 @@ public class BalloonController : MonoBehaviourWrapper
         if(!IsAlive) return;
         
         var enemyController = collision.gameObject.GetComponentInParent<EnemyController>();
-        
-        Debug.Log(collision.collider.GetComponent<DamageableArea>());
-        Debug.Log(collision.collider.GetComponent<DamageArea>());
         
         if (
             enemyController != null
@@ -165,7 +160,13 @@ public class BalloonController : MonoBehaviourWrapper
 
     private void Die()
     {
-        StartCoroutine(nameof(Loose));
+        if (_hasHealPoint)
+        {
+            SwitchHealpoint();
+            var explosionSound = Resources.Load<AudioClip>("Sounds/damageRecieved");
+            AudioObject.GetInstance().Play(explosionSound);
+        }
+        else StartCoroutine(nameof(Loose));
     }
 
     private void Kill(EnemyController enemy)
@@ -205,6 +206,14 @@ public class BalloonController : MonoBehaviourWrapper
             ropeLength += ropeBoost.boostLength;
             Destroy(ropeBoost.gameObject);
         }
+        
+        HealPoint healPoint = collider.GetComponent<HealPoint>();
+
+        if (healPoint != null && !_hasHealPoint)
+        {
+            SwitchHealpoint();
+            Destroy(healPoint.gameObject);
+        }
     }
 
     private IEnumerator Win()
@@ -222,11 +231,15 @@ public class BalloonController : MonoBehaviourWrapper
         Destroy(BC);
         var explosion = Resources.Load<GameObject>("FX/CFX3_Skull_Explosion");
         
-        var explosionSound = Resources.Load<AudioClip>("Sounds/damageRecieved");
-        AudioObject.GetInstance().Play(explosionSound);
-        
         Destroy(Instantiate(explosion, transform.position, Quaternion.identity), 2);
         yield return new WaitForSeconds(2);
         MenuController.GetInstance().LooseScene();
+    }
+
+    private void SwitchHealpoint()
+    {
+        _hasHealPoint = !_hasHealPoint;
+        Debug.Log(_hasHealPoint);
+        _spriteRenderer.color = _hasHealPoint ? Color.magenta : Color.white;
     }
 }
