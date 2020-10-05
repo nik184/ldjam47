@@ -179,6 +179,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Floor
       objectReference: {fileID: 0}
+    - target: {fileID: 7014635972400365045, guid: c89d5af4fc873ae4d99a4712ed20055e,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.1981132
+      objectReference: {fileID: 0}
+    - target: {fileID: 7014635972400365045, guid: c89d5af4fc873ae4d99a4712ed20055e,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.15792987
+      objectReference: {fileID: 0}
+    - target: {fileID: 7014635972400365045, guid: c89d5af4fc873ae4d99a4712ed20055e,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.15792987
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c89d5af4fc873ae4d99a4712ed20055e, type: 3}
 --- !u!4 &4162423157395602871 stripped
