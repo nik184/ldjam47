@@ -29,6 +29,11 @@ public class MenuController : MonoBehaviour
         GoToScene(0);
     }
     
+    public void Exit()
+    {
+        Application.Quit();
+    }
+    
     public void WinScene()
     {
         GoToScene(1);
@@ -73,6 +78,16 @@ public class MenuController : MonoBehaviour
     {
         StaticData.NextLevel();
         GoToScene(StaticData.CurrentLevel);
+    }
+
+    public void OpenLicense()
+    {
+        Application.OpenURL("https://docs.google.com/document/d/13mYiTxrxDsReZA8H1S_di1-a2qlTlz7WAtl25_dOvJE/edit#");
+    }
+
+    public void OpenGamePage()
+    {
+        Application.OpenURL("https://ldjam.com/events/ludum-dare/47/$216762");
     }
 
     public void GoToScene(int scene)

@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class BalloonController : MonoBehaviourWrapper
 {
-    public Vector2 anchorPoint = Vector2.down;
     public int ropeLength = 5;
     public float kickSwing = 5;
 
     private const float ArchimedesPower = 2;
     private const float KickPower = 25;
     private const float MinSpeedToKillEnemy = 0.5f;
+    private readonly Vector2 _anchorPoint = new Vector2(0, -2);
 
     private ScoreBoard _scoreBoard;
     private AnchorController _anchor;
@@ -21,6 +23,9 @@ public class BalloonController : MonoBehaviourWrapper
     private float _balloonClickTime;
     public bool IsAlive { get; private set; } = true;
 
+    private bool _paused;
+    private float _lastKillTime;
+
 
     private void Start()
     {
@@ -28,7 +33,7 @@ public class BalloonController : MonoBehaviourWrapper
         _anchor = FindObjectOfType<AnchorController>();
         _gum = FindObjectOfType<GumController>();
         _scoreBoard = FindObjectOfType<ScoreBoard>();
-        _anchor.positionIt(anchorPoint);
+        _anchor.positionIt(_anchorPoint);
 
         StaticData.CurrentLevel = SceneManager.GetActiveScene().buildIndex;
     }
@@ -36,7 +41,7 @@ public class BalloonController : MonoBehaviourWrapper
     private void OnGUI()
     {
         
-        if(!IsAlive) return;
+        if(!IsAlive || _paused) return;
         
         var mosuePos = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var kickVector = Vector2.zero;
@@ -72,6 +77,18 @@ public class BalloonController : MonoBehaviourWrapper
         }
     }
 
+    private void Update()
+    {
+        
+
+        if (Input.GetButtonDown("Pause"))
+        {
+            Debug.Log("asdasd");
+            _paused = !_paused;
+            Time.timeScale = _paused ? 0 : 1;
+        }
+    }
+
     private void OnMouseDrag()
     {
         if(!IsAlive) return;
@@ -87,12 +104,12 @@ public class BalloonController : MonoBehaviourWrapper
         
         var impulse = Vector2.up * ArchimedesPower;
         Debug.DrawLine(pos, pos + impulse, Color.red);
-        if ((pos - anchorPoint).magnitude >= ropeLength)
+        if ((pos - _anchorPoint).magnitude >= ropeLength)
         {
-            var ropeVecDir = (anchorPoint - pos).normalized;
+            var ropeVecDir = (_anchorPoint - pos).normalized;
 
-            var angleBetweenRopeAndVel = Mathf.Cos(Mathf.Deg2Rad * Vector2.Angle(RB.velocity, anchorPoint - pos));
-            var angleBetweenRopeAndArch = Mathf.Cos(Mathf.Deg2Rad * Vector2.Angle(impulse, anchorPoint - pos));
+            var angleBetweenRopeAndVel = Mathf.Cos(Mathf.Deg2Rad * Vector2.Angle(RB.velocity, _anchorPoint - pos));
+            var angleBetweenRopeAndArch = Mathf.Cos(Mathf.Deg2Rad * Vector2.Angle(impulse, _anchorPoint - pos));
             
             var Ep = - ropeVecDir * Mathf.Sqrt(RB.velocity.magnitude) * angleBetweenRopeAndVel;
             var Ec = - ropeVecDir * impulse.magnitude * angleBetweenRopeAndArch;
@@ -104,8 +121,8 @@ public class BalloonController : MonoBehaviourWrapper
                 ropePulling = -ropePulling;
             }
 
-            if ((pos - anchorPoint).magnitude >= ropeLength + 0.5f) 
-                ropePulling += ropePulling.normalized * ((pos - anchorPoint).magnitude - ropeLength + 2) * 2;
+            if ((pos - _anchorPoint).magnitude >= ropeLength + 0.5f) 
+                ropePulling += ropePulling.normalized * ((pos - _anchorPoint).magnitude - ropeLength + 2) * 2;
             
             
             impulse += ropePulling;
@@ -162,6 +179,14 @@ public class BalloonController : MonoBehaviourWrapper
         var explosionSound = Resources.Load<AudioClip>("Sounds/punch" + Mathf.RoundToInt(Random.Range(1,3.4f)));
         AudioObject.GetInstance().Play(explosionSound);
 
+        if (Time.time - _lastKillTime < 0.5f)
+        {
+            Instantiate(
+                Resources.Load("Images/Combo"), transform.up * 10, quaternion.identity
+            );
+        }
+
+        _lastKillTime = Time.time;
 
         if (StaticData.KilledEnemies == StaticData.TotalEnemies)
         {
