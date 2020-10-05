@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -23,6 +24,7 @@ public class BalloonController : MonoBehaviourWrapper
     public bool IsAlive { get; private set; } = true;
 
     private bool _paused;
+    private float _lastKillTime;
 
 
     private void Start()
@@ -177,6 +179,14 @@ public class BalloonController : MonoBehaviourWrapper
         var explosionSound = Resources.Load<AudioClip>("Sounds/punch" + Mathf.RoundToInt(Random.Range(1,3.4f)));
         AudioObject.GetInstance().Play(explosionSound);
 
+        if (Time.time - _lastKillTime < 0.5f)
+        {
+            Instantiate(
+                Resources.Load("Images/Combo"), transform.up * 10, quaternion.identity
+            );
+        }
+
+        _lastKillTime = Time.time;
 
         if (StaticData.KilledEnemies == StaticData.TotalEnemies)
         {
