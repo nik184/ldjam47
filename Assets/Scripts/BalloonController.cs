@@ -8,13 +8,13 @@ using Random = UnityEngine.Random;
 
 public class BalloonController : MonoBehaviourWrapper
 {
-    public Vector2 anchorPoint = Vector2.down;
     public int ropeLength = 5;
     public float kickSwing = 5;
 
     private const float ArchimedesPower = 2;
     private const float KickPower = 25;
     private const float MinSpeedToKillEnemy = 0.5f;
+    private readonly Vector2 _anchorPoint = new Vector2(0, -2);
 
     private ScoreBoard _scoreBoard;
     private AnchorController _anchor;
@@ -33,7 +33,7 @@ public class BalloonController : MonoBehaviourWrapper
         _anchor = FindObjectOfType<AnchorController>();
         _gum = FindObjectOfType<GumController>();
         _scoreBoard = FindObjectOfType<ScoreBoard>();
-        _anchor.positionIt(anchorPoint);
+        _anchor.positionIt(_anchorPoint);
 
         StaticData.CurrentLevel = SceneManager.GetActiveScene().buildIndex;
     }
@@ -104,12 +104,12 @@ public class BalloonController : MonoBehaviourWrapper
         
         var impulse = Vector2.up * ArchimedesPower;
         Debug.DrawLine(pos, pos + impulse, Color.red);
-        if ((pos - anchorPoint).magnitude >= ropeLength)
+        if ((pos - _anchorPoint).magnitude >= ropeLength)
         {
-            var ropeVecDir = (anchorPoint - pos).normalized;
+            var ropeVecDir = (_anchorPoint - pos).normalized;
 
-            var angleBetweenRopeAndVel = Mathf.Cos(Mathf.Deg2Rad * Vector2.Angle(RB.velocity, anchorPoint - pos));
-            var angleBetweenRopeAndArch = Mathf.Cos(Mathf.Deg2Rad * Vector2.Angle(impulse, anchorPoint - pos));
+            var angleBetweenRopeAndVel = Mathf.Cos(Mathf.Deg2Rad * Vector2.Angle(RB.velocity, _anchorPoint - pos));
+            var angleBetweenRopeAndArch = Mathf.Cos(Mathf.Deg2Rad * Vector2.Angle(impulse, _anchorPoint - pos));
             
             var Ep = - ropeVecDir * Mathf.Sqrt(RB.velocity.magnitude) * angleBetweenRopeAndVel;
             var Ec = - ropeVecDir * impulse.magnitude * angleBetweenRopeAndArch;
@@ -121,8 +121,8 @@ public class BalloonController : MonoBehaviourWrapper
                 ropePulling = -ropePulling;
             }
 
-            if ((pos - anchorPoint).magnitude >= ropeLength + 0.5f) 
-                ropePulling += ropePulling.normalized * ((pos - anchorPoint).magnitude - ropeLength + 2) * 2;
+            if ((pos - _anchorPoint).magnitude >= ropeLength + 0.5f) 
+                ropePulling += ropePulling.normalized * ((pos - _anchorPoint).magnitude - ropeLength + 2) * 2;
             
             
             impulse += ropePulling;
