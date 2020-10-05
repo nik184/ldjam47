@@ -39,7 +39,6 @@ using static UnityEngine.Screen;
             _spawners = FindObjectsOfType<SpawnerController>();
             _aimCoord = _anchor;
             _aim = AimType.Player;
-            Debug.Log(_aimCoord);
         } else switch (movingType)
         {
             case MovingType.Random:

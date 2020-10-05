@@ -15,9 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/LooseScene.unity
     guid: 43af2646700f86e4abc5c988ba71a736
   - enabled: 1
-    path: Assets/Scenes/PauseScene.unity
-    guid: b8c0f9fa75c85bf44988ec4ea50aca54
-  - enabled: 1
     path: Assets/Scenes/Story.unity
     guid: 3fe76bfca4cc51c47af7da538787f2d0
   - enabled: 1
