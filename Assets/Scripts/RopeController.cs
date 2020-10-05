@@ -17,6 +17,8 @@ public class RopeController : MonoBehaviourWrapper
 
     private void Update()
     {
+        if(!_balloon.IsAlive) return;
+        
         Vector3[] points = new Vector3[101];
         _lineRenderer.positionCount = points.Length;
 
