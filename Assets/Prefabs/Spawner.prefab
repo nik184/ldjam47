@@ -50,7 +50,6 @@ MonoBehaviour:
   Enemies:
   - {fileID: 9028735868981985752}
   - {fileID: 5944072301574128420}
-  - {fileID: 2986563984987406396}
 --- !u!1 &3370999640849853587
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,18 +163,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 175214770811835436}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2986563984987406396 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3106380903421727760, guid: 66334a8a8cd7c664ea96c0f125513221,
-    type: 3}
-  m_PrefabInstance: {fileID: 175214770811835436}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 197f87b191c1a8549bf2f17d084bb9b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &867144920752367099
 PrefabInstance:
   m_ObjectHideFlags: 0

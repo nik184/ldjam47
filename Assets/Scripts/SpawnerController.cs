@@ -27,7 +27,8 @@ public class SpawnerController : MonoBehaviour
 
             if (FindObjectsOfType<EnemyController>().Length < 3)
             {
-                var newEnemy = Instantiate(Enemies[1], transform);
+                var r = Mathf.RoundToInt(Random.Range(0, 1.2f));
+                var newEnemy = Instantiate(Enemies[r], transform);
                 newEnemy.gameObject.SetActive(true);
                 newEnemy.WasSpawned = true;
                 newEnemy.speed = EnemiesSpeed;

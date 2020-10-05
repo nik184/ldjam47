@@ -82,7 +82,7 @@ using static UnityEngine.Screen;
         {
             case AimType.Player:
                 _aimCoord = _spawners[
-                    Mathf.RoundToInt(Random.Range(0, _spawners.Length - 1))
+                    Mathf.RoundToInt(Random.Range(0, _spawners.Length - 0.6f))
                 ].transform.position;
                 _aim = AimType.Spawner;
                 break;
