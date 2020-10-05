@@ -80,6 +80,16 @@ public class MenuController : MonoBehaviour
         GoToScene(StaticData.CurrentLevel);
     }
 
+    public void OpenLicense()
+    {
+        Application.OpenURL("https://docs.google.com/document/d/13mYiTxrxDsReZA8H1S_di1-a2qlTlz7WAtl25_dOvJE/edit#");
+    }
+
+    public void OpenGamePage()
+    {
+        Application.OpenURL("https://ldjam.com/events/ludum-dare/47/$216762");
+    }
+
     public void GoToScene(int scene)
     {
         if (scene >= SceneManager.sceneCountInBuildSettings)
